@@ -8,25 +8,29 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
+import java.io.*;
 import java.util.Scanner;
 
-public class Main {
+public class Main 
+{
     public static void main(String[] args) 
     {
         Scanner sc = new Scanner(System.in);
         Registration reg = new Registration();
 
         int choice;
+        
         System.out.println("Welcome to Mahallah Management System");
 
-        do 
-        {
+        do{
+            System.out.println();
             System.out.println("Choose the service:");
             System.out.println("1. Register");
             System.out.println("2. Remove");
             System.out.println("3. View Student Information");
             System.out.println("4. View Staff Information");
             System.out.println("5. Exit");
+            System.out.println();
             System.out.print("Enter choice: ");
             choice = sc.nextInt();
 
@@ -60,7 +64,7 @@ public class Main {
         String mahallah = Mahallah.chooseMahallah(sc);
         System.out.println("\n" + type.toUpperCase() + " in Mahallah " + mahallah + ":");
 
-        if (type.equals("student")) 
+        if (type.equals("student")) //student info
         {
             if (reg.getStudentList().isEmpty()) 
             {
@@ -71,7 +75,7 @@ public class Main {
                 reg.listPeople(reg.getStudentList());
             }
         } 
-        else if (type.equals("staff")) 
+        else if (type.equals("staff")) //staff info
         {
             if (reg.getStaffList().isEmpty()) 
             {
