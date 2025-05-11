@@ -8,10 +8,13 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
-public class Staff extends Person {
+import java.io.*;
+public class Staff extends Person 
+{
     private String position;
 
-    public Staff(String name, int ID, String email, int phoneNumber, String position) {
+    public Staff(String name, int ID, String email, int phoneNumber, String position) 
+    {
         super(name, ID, email, phoneNumber);
         this.position = position;
     }
@@ -20,7 +23,7 @@ public class Staff extends Person {
     public void displayInfo() 
     {
         System.out.println("Staff Name: " + name);
-        System.out.println("ID: " + ID);
+        System.out.println("Staff number : " + ID);
         System.out.println("Email: " + email);
         System.out.println("Phone Number: " + phoneNumber);
         System.out.println("Position: " + position);
