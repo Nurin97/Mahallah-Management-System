@@ -12,12 +12,14 @@ import java.io.*;
 
 public class Student extends Person 
 {
-    private String position;//kulliyah
+    private String position; //kulliyah
+    private String mahallah; 
 
-    public Student(String name, int ID, String email, int phoneNumber, String position) 
+    public Student(String name, int ID, String email, int phoneNumber, String position, String mahallah) 
     {
         super(name, ID, email, phoneNumber);
         this.position = position;
+        this.mahallah = mahallah;
     }
 
     @Override
@@ -28,12 +30,12 @@ public class Student extends Person
         System.out.println("Email: " + email);
         System.out.println("Phone Number: " + phoneNumber);
         System.out.println("Course: " + position);
+        System.out.println("Mahallah: " + mahallah);  
     }
 
     @Override
     public String toFileString() 
     {
-        return "Student," + super.toFileString() + "," + position;
+        return "Student," + super.toFileString() + "," + position + "," + mahallah;  // Include Mahallah
     }
 }
-
