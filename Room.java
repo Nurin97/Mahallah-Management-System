@@ -8,6 +8,7 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
+import java.io.*;
 import java.util.Scanner;
 
 public class Room 
@@ -43,7 +44,7 @@ public class Room
         return num + "," + level + "," + compartment + "," + status;
     }
 
-    // Static methods to choose room information via Scanner
+    //choose room 
     public static int chooseRoom(Scanner sc) 
     {
         System.out.print("\nEnter room number: ");
@@ -51,9 +52,11 @@ public class Room
     }
 
     public static String chooseCompartment(Scanner sc) 
-    {
-        sc.nextLine(); // consume newline
-        System.out.print("\nEnter compartment (Single/Double): ");
-        return sc.nextLine();
-    }
+{
+    System.out.println();
+    sc.nextLine();  
+    System.out.print("\nEnter compartment (A, B, C, D): ");
+    return sc.nextLine();
+}
+
 }
