@@ -8,6 +8,7 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,68 +18,96 @@ public class Mahallah
     private char block;
     private ArrayList<Room> rooms;
 
-    // Updated list of Mahallah names
-    static final String[] mahallahNames = {
+    //nama mahallah 
+    static final String[] mahallahNames = 
+    {
         "Faruq", "Uthman", "Ali", "Bilal", "Siddiq", "Zubair", "Salahuddin", "Aminah",
         "Salahuddin", "Asiah", "Sumayyah", "Asma", "Maryam", "Halimah", "Hafsah",
         "Safiyyah", "Ruqayyah"
     };
 
-    public Mahallah(String name, char block) {
+    public Mahallah(String name, char block) 
+    {
         this.name = name;
         this.block = block;
         this.rooms = new ArrayList<>();
     }
-
-    // Add a room to the Mahallah
-    public void addRoom(Room room) {
+ 
+    public void addRoom(Room room) 
+    {
         rooms.add(room);
     }
 
-    // Get all rooms in this Mahallah
-    public ArrayList<Room> getRooms() {
+    public ArrayList<Room> getRooms() 
+    {
         return rooms;
     }
 
-    // Display Mahallah info and its rooms
-    public void display() {
+    public void display() 
+    {
         System.out.println("Mahallah Name: " + name);
         System.out.println("Block: " + block);
         System.out.println("Rooms:");
-        for (Room r : rooms) {
+        for (Room r : rooms) 
+        {
             r.display();
             System.out.println("-----");
         }
     }
 
-    // Static method to choose Mahallah name
-    public static String chooseMahallah(Scanner sc) {
+    
+    // mahallah name
+    public static String chooseMahallah(Scanner sc) 
+    {
         System.out.println("\nChoose Mahallah:");
-        for (int i = 0; i < mahallahNames.length; i++) {
-            System.out.println((i + 1) + ". " + mahallahNames[i]);
+        for (int i = 0; i < mahallahNames.length; i++) 
+        {
+            System.out.println((i + 1) + ". " + mahallahNames[i]); 
         }
-        System.out.print("Enter choice (1-" + mahallahNames.length + "): ");
+        System.out.print("\nEnter mahallah choice\n ");
         int choice = sc.nextInt();
-        if (choice >= 1 && choice <= mahallahNames.length) {
+        
+        if (choice >= 1 && choice <= mahallahNames.length) 
+        {
             return mahallahNames[choice - 1];
-        } else {
-            System.out.println("Invalid choice. Defaulting to: " + mahallahNames[0]);
+        } 
+        else 
+        {
+            System.out.println("Invalid choice, please enter a correct choice ");
             return mahallahNames[0];
         }
     }
 
-    // Static method to choose block letter
-    public static String chooseBlock(Scanner sc) {
-        System.out.println("\nChoose Block (A-G):");
-        for (char c = 'A'; c <= 'G'; c++) {
+    // block mahallah
+   public static String chooseBlock(Scanner sc) 
+{
+    char block;
+    while (true) 
+    {
+        System.out.println("\nThe available blocks are (A-G): "); //print block
+        for (char c = 'A'; c <= 'G'; c++) 
+        {
             System.out.println(c);
         }
-        System.out.print("Enter block letter: ");
-        return sc.next().toUpperCase();
-    }
+        System.out.print("Choose the block: ");
+        
+        block = sc.next().toUpperCase().charAt(0);  
 
-    // Static method to choose floor
-    public static String chooseFloor(Scanner sc) {
+        if (block >= 'A' && block <= 'G') //kalau salah enter valid
+        {
+            return String.valueOf(block); 
+        } 
+        else 
+        {
+            System.out.println("Invalid block. Please enter a valid block (A-G).");
+        }
+    }
+}
+
+
+    // floor mahallah
+    public static String chooseFloor(Scanner sc) 
+    {
         System.out.println("\nChoose Floor:");
         System.out.println("1. Ground Floor");
         System.out.println("2. Floor 1");
@@ -86,7 +115,8 @@ public class Mahallah
         System.out.println("4. Floor 3");
         System.out.print("Enter choice: ");
         int choice = sc.nextInt();
-        switch (choice) {
+        switch (choice) 
+        {
             case 1: return "Ground Floor";
             case 2: return "Floor 1";
             case 3: return "Floor 2";
