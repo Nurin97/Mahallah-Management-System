@@ -8,6 +8,14 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -20,44 +28,61 @@ public class Registration
     {
         studentList = new ArrayList<>();
         staffList = new ArrayList<>();
-    }
 
+        // student
+        studentList.add(new Student("Ammar Azwari", 12345, "ammar@mail.com", 12345678, "Computer Science"));
+        studentList.add(new Student("Ali Umar", 12346, "ali@mail.com", 12345679, "Electrical Engineering"));
+        studentList.add(new Student("Fatimah Zahra", 12347, "fatimah@mail.com", 12345680, "Mechanical Engineering"));
+
+        // staff
+        staffList.add(new Staff("Dr. John Doe", 56789, "johndoe@mail.com", 98765432, "Lecturer"));
+        staffList.add(new Staff("Prof. Sarah Ali", 56790, "sarah@mail.com", 98765433, "Professor"));
+        staffList.add(new Staff("Mr. Michael Lee", 56791, "michael@mail.com", 98765434, "Administrator"));
+    }
+    
+    //method register
     public void registerMenu(Scanner sc) 
     {
         System.out.println("Registration");
 
-       
         String mahallahName = Mahallah.chooseMahallah(sc);
         String block = Mahallah.chooseBlock(sc);
         String floor = Mahallah.chooseFloor(sc);
         int roomNum = Room.chooseRoom(sc);
         String compartment = Room.chooseCompartment(sc);
+        sc.nextLine();  
 
-        sc.nextLine();
-
-        System.out.print("Is this a Student or Staff? (1-Student, 2-Staff): ");
+        System.out.println();
+        System.out.println("Is this student or staff? ");
+        System.out.println("1 - student");
+        System.out.println("2 - staff");
         int type = sc.nextInt();
-        sc.nextLine();
-
-        System.out.print("Enter name: ");
+        sc.nextLine(); 
+        
+        System.out.println("Enter name: ");
         String name = sc.nextLine();
-        System.out.print("Enter ID: ");
+        
+        System.out.println("Enter matric number: ");
         int id = sc.nextInt();
-        sc.nextLine();
-        System.out.print("Enter email: ");
+        sc.nextLine();  
+        
+        System.out.println("Enter email: ");
         String email = sc.nextLine();
-        System.out.print("Enter phone number: ");
+        
+        System.out.println("Enter phone number: ");
         int phone = sc.nextInt();
-        sc.nextLine();
-        System.out.print("Enter position: ");
-        String position = sc.nextLine();
+        sc.nextLine(); 
 
-        if (type == 1) 
+        System.out.println();
+        System.out.print("Enter Kulliyah: ");
+        String position = sc.nextLine();  
+
+        if (type == 1) //student
         {
             Student s = new Student(name, id, email, phone, position);
             studentList.add(s);
         } 
-        else if (type == 2) 
+        else if (type == 2) //staff
         {
             Staff staff = new Staff(name, id, email, phone, position);
             staffList.add(staff);
@@ -67,10 +92,14 @@ public class Registration
             System.out.println("Invalid type.");
         }
 
+        //register message
         System.out.println("Registration complete!");
+        System.out.println("Welcome, " + name + "!");
         System.out.println("Mahallah: " + mahallahName + ", Block " + block + ", Floor " + floor + ", Room " + roomNum + ", Compartment: " + compartment);
     }
 
+    
+    //method remove
     public void removeMenu(Scanner sc) 
     {
         System.out.println("\nWhich one would you like to remove?");
@@ -79,7 +108,7 @@ public class Registration
         System.out.print("Enter choice: ");
         int type = sc.nextInt();
 
-        if (type == 1) 
+        if (type == 1) //student
         {
             if (studentList.isEmpty()) 
             {
@@ -99,7 +128,7 @@ public class Registration
                 System.out.println("Invalid index.");
             }
         } 
-        else if (type == 2) 
+        else if (type == 2) //staff
         {
             if (staffList.isEmpty()) 
             {
