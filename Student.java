@@ -8,13 +8,14 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
-
+import java.io.*;
 
 public class Student extends Person 
 {
-    private String position; // e.g., committee role
+    private String position;//kulliyah
 
-    public Student(String name, int ID, String email, int phoneNumber, String position) {
+    public Student(String name, int ID, String email, int phoneNumber, String position) 
+    {
         super(name, ID, email, phoneNumber);
         this.position = position;
     }
@@ -35,3 +36,4 @@ public class Student extends Person
         return "Student," + super.toFileString() + "," + position;
     }
 }
+
