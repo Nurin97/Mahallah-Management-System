@@ -8,6 +8,7 @@ package com.mycompany.assignment_oop;
  *
  * @author LENOVO
  */
+import java.io.*;
 public abstract class Person 
 {
     protected String name;
@@ -29,4 +30,10 @@ public abstract class Person
     {
         return name + "," + ID + "," + email + "," + phoneNumber;
     }
+
+    int getID() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
 }
