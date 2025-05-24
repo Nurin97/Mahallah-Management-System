@@ -15,8 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class MahallahMenu {
-
+public class MahallahMenu 
+{
     public Parent getView(MahallahMain app, Stage stage)
 
     {
@@ -91,12 +91,13 @@ public class MahallahMenu {
         btnExit.setOnAction(new EventHandler<ActionEvent>() 
         {
             @Override
-            public void handle(ActionEvent e)
+            public void handle(ActionEvent e) 
             {
-                stage.close();
+              stage.close();
             }
         });
 
+         
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
         layout.setAlignment(Pos.CENTER);
@@ -105,6 +106,4 @@ public class MahallahMenu {
 
         return layout;
     }
-
-    
 }
