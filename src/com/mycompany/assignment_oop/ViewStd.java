@@ -6,6 +6,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+
 
 
 public class ViewStd {
@@ -14,11 +17,23 @@ public class ViewStd {
         VBox layout = new VBox(10);
         layout.setStyle("-fx-padding: 20");
 
-        Text label = new Text("VIEW STUDENT INFORMATION");
+        Text label = new Text("Student Information");
 
-        Button btnGoToMahallahMenu = new Button("back");
-        
+        //TextArea
+        TextArea taDisplay = new TextArea();
+        taDisplay.setEditable(false);
+        taDisplay.setWrapText(true);
+        taDisplay.setWrapText(true);
+        taDisplay.setPrefHeight(500);
 
+        //Scroll
+        ScrollPane scrollPane = new ScrollPane(taDisplay);
+        scrollPane.setFitToWidth(true); 
+        scrollPane.setFitToHeight(true); 
+        scrollPane.setPannable(true);
+
+        Button btnGoToMahallahMenu = new Button("Back");
+    
         btnGoToMahallahMenu.setOnAction(new EventHandler<ActionEvent>() 
         {
             @Override
@@ -29,7 +44,7 @@ public class ViewStd {
         });
 
 
-        layout.getChildren().addAll(label, btnGoToMahallahMenu);
+        layout.getChildren().addAll(label, taDisplay, btnGoToMahallahMenu);
         return layout;
     }
 }
