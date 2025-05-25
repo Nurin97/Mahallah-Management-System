@@ -13,9 +13,9 @@ public class ViewStaff {
         VBox layout = new VBox(10);
         layout.setStyle("-fx-padding: 20");
 
-        Text label = new Text("VIEW STAFF INFORMATION");
+        Text label = new Text("Staff Information");
 
-        Button btnGoToMahallahMenu = new Button("back");
+        Button btnGoToMahallahMenu = new Button("Back");
         
 
         btnGoToMahallahMenu.setOnAction(new EventHandler<ActionEvent>() 
