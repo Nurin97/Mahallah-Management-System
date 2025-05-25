@@ -6,6 +6,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 
 public class ViewStaff {
     public Parent getView(MahallahMain app) 
@@ -15,6 +17,16 @@ public class ViewStaff {
 
         Text label = new Text("Staff Information");
 
+        //TextArea
+        TextArea taDisplay = new TextArea();
+        taDisplay.setEditable(false);
+        taDisplay.setPrefHeight(500);
+
+        ScrollPane scrollPane = new ScrollPane(taDisplay);
+        scrollPane.setFitToWidth(true); 
+        scrollPane.setFitToHeight(true); 
+        scrollPane.setPannable(true);
+        
         Button btnGoToMahallahMenu = new Button("Back");
         
 
@@ -28,7 +40,7 @@ public class ViewStaff {
         });
 
 
-        layout.getChildren().addAll(label, btnGoToMahallahMenu);
+        layout.getChildren().addAll(label, taDisplay, btnGoToMahallahMenu);
         return layout;
     }
 }
