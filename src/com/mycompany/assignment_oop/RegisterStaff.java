@@ -1,27 +1,27 @@
-package Assignment2OOP;
+package com.mycompany.assignment_oop;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.geometry.Pos;
 
 
-public class RegisterStudent{
+public class RegisterStaff {
     
     public Parent getView (MahallahMain app) {
         
-        Label title = new Label("Student Registration");
+        Label title = new Label("Staff Registration");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         
-        //Register student 
+        //Register staff
         Label nameLabel = new Label ("Name: ");
         TextField nameField = new TextField();
         
-        Label matrixLabel = new Label ("Matrix number: ");
-        TextField matrixField = new TextField();
+        Label staffIdLabel = new Label ("Staff Id: ");
+        TextField staffIdField = new TextField();
         
         Label phoneLabel = new Label ("Phone number: ");
         TextField phoneField = new TextField();
@@ -29,8 +29,8 @@ public class RegisterStudent{
         Label emailLabel = new Label ("Email: ");
         TextField emailField = new TextField();
         
-        Label kuliyyahLabel = new Label ("Kuliyyah: ");
-        TextField kuliyyahField = new TextField();
+        Label positionLabel = new Label ("Position: ");
+        TextField positionField = new TextField();
         
         Label mahallahLabel = new Label("Choose your mahallah");
         ComboBox<String> mahallahBox = new ComboBox<>();
@@ -75,23 +75,24 @@ public class RegisterStudent{
         Button submitBtn = new Button("Submit");
         submitBtn.setOnAction(e -> {
             String name = nameField.getText().trim();
-            String matrix = matrixField.getText().trim();
+            String staffId = staffIdField.getText().trim();
             String phone = phoneField.getText().trim();
             String email = emailField.getText().trim();
-            String kuliyyah = kuliyyahField.getText().trim();
+            String position = positionField.getText().trim();
             String room = roomField.getText().trim();
     
             boolean mahallahSelected = mahallahBox.getSelectionModel().getSelectedItem() != null;
             boolean blockSelected = blockBox.getSelectionModel().getSelectedItem() != null;
             boolean floorSelected = group.getSelectedToggle() != null;
             boolean compartmentSelected = group1.getSelectedToggle() != null;
+            
 
-             if (
+            if (
                     name.isEmpty() || 
-                    matrix.isEmpty() || 
+                    staffId.isEmpty() || 
                     phone.isEmpty() || 
                     email.isEmpty() || 
-                    kuliyyah.isEmpty() || 
+                    position.isEmpty() || 
                     room.isEmpty() ||
                     !mahallahSelected ||
                     !blockSelected ||
@@ -99,19 +100,19 @@ public class RegisterStudent{
                     !compartmentSelected
                     ) 
             {
-                  messageLabel.setText("Please fill in all the fields.");
-                  messageLabel.setStyle("-fx-text-fill: red;");
-                 return;
+                    messageLabel.setText("Please fill in all the fields.");
+                    messageLabel.setStyle("-fx-text-fill: red;");
+                    return;
             }
-            
-            messageLabel.setText("Successfully registered student!");
+
+            messageLabel.setText("Successfully registered staff!");
             messageLabel.setStyle("-fx-text-fill: green;");
-            
+
             nameField.clear();
-            matrixField.clear();
+            staffIdField.clear();
             phoneField.clear();
             emailField.clear();
-            kuliyyahField.clear();
+            positionField.clear();
             mahallahBox.getSelectionModel().clearSelection();
             blockBox.getSelectionModel().clearSelection();
             group.selectToggle(null); 
@@ -140,10 +141,10 @@ public class RegisterStudent{
         layout.getChildren().addAll(
                 title,
                 nameLabel, nameField,
-                matrixLabel, matrixField,
+                staffIdLabel, staffIdField,
                 phoneLabel, phoneField,
                 emailLabel, emailField, 
-                kuliyyahLabel, kuliyyahField,
+                positionLabel, positionField,
                 mahallahLabel, new VBox(5, mahallahBox),
                 blockLabel, new VBox(5, blockBox),
                 floorLable, new HBox(10, floor1Btn, floor2Btn, floor3Btn, floor4Btn),
@@ -151,9 +152,9 @@ public class RegisterStudent{
                 compartmentLable, new HBox(10, compABtn, compBBtn, compCBtn, compDBtn),
                 buttonBox, messageBox
         );
-                return layout;               
-    }  
-    
+
+        return layout;
+    }
+
 }
 
-   

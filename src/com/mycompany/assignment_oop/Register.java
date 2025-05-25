@@ -1,23 +1,54 @@
 package com.mycompany.assignment_oop;
 
 import javafx.event.ActionEvent;
-import javafx.scene.Parentandler;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
 
-public class Register {
-    MahallahMainent getView(MahallahMain app) 
+public class Register 
+{
+    public Parent getView(MahallahMain app) 
     {
-        VBofx-padding new VBox(10);
-        layout.setStyle("-fx-padding: 20");
+        VBox mainLayout = new VBox(10);
+        mainLayout.setStyle("-fx-padding: 20");
+        mainLayout.setAlignment(Pos.CENTER);
+        
+        Text label = new Text("REGISTER AS:");
+        label.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        
+        Button studentBtn = new Button("Student");
+        Button staffBtn = new Button("Staff");
+        Button btnGoToMahallahMenu = new Button("Back");
+        
+        double buttonWidth = 200;
+        double buttonHeight = 40;
+        
+        studentBtn.setPrefSize(buttonWidth, buttonHeight);
+        staffBtn.setPrefSize(buttonWidth, buttonHeight);
+        btnGoToMahallahMenu.setPrefSize(buttonWidth, buttonHeight);
+        
+        mainLayout.getChildren().addAll(label, studentBtn, staffBtn, btnGoToMahallahMenu);
 
-        Text label = new Text("REGISTER");
+        StackPane root = new StackPane(mainLayout);
+        
+        studentBtn.setOnAction(e -> {
+            RegisterStudent studentForm = new RegisterStudent();
+            Parent studentView = studentForm.getView(app);
+            
+            root.getChildren().setAll(studentView);
+        });
 
-        Button btnGoToMahallahMenu = new Button("back");
-
-
+        staffBtn.setOnAction(e -> {
+            RegisterStaff staffForm = new RegisterStaff();
+            Parent staffView = staffForm.getView(app);
+            
+            root.getChildren().setAll(staffView);
+        });
+        
         btnGoToMahallahMenu.setOnAction(new EventHandler<ActionEvent>() 
         {
             @Override
@@ -27,8 +58,6 @@ public class Register {
             }
         });
 
-
-        layout.getChildren().addAll(label, btnGoToMahallahMenu);
-        return layout;
+        return root;
     }
 }
