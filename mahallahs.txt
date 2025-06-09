@@ -1,0 +1,6 @@
+Faruq:A[],B[201-2A],C[],D[]
+Siddiq:A[],B[202-2B],C[],D[]
+Bilal:A[305-3B],B[101-1C],C[],D[]
+Aminah:A[],B[],C[103-1C],D[]
+Asiah:A[],B[],C[],D[410-4D]
+Hafsa:A[],B[],C[],D[]

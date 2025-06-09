@@ -12,48 +12,65 @@ import java.util.Scanner;
 
 public class Room 
 {
-    private int num;
-    private int level;
+    private String roomNumber;
+    private String floor;
     private String compartment;
-    private boolean status; // true = occupied, false = vacant
 
-    public Room(int num, int level, String compartment, boolean status) 
-    {
-        this.num = num;
-        this.level = level;
+    // ✅ Constructor with compartment
+    public Room(String roomNumber, String floor, String compartment) {
+        this.roomNumber = roomNumber;
+        this.floor = floor;
         this.compartment = compartment;
-        this.status = status;
     }
 
-    public void statusUpdate(boolean status) 
-    {
-        this.status = status;
+    // ✅ Constructor without compartment (for SettingsManager use)
+    public Room(String roomNumber, String floor) {
+        this.roomNumber = roomNumber;
+        this.floor = floor;
+        this.compartment = "-"; // default value
     }
 
-    public void display() 
-    {
-        System.out.println("Room Number: " + num);
-        System.out.println("Level: " + level);
-        System.out.println("Compartment: " + compartment);
-        System.out.println("Occupied: " + status);
+    // Getters
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+    @Override
+    public String toString() {
+        return getRoomNumber(); 
     }
 
-    public String toFileString() 
-    {
-        return num + "," + level + "," + compartment + "," + status;
+    public String getFloor() {
+        return floor;
     }
 
-    // Static methods to choose room information via Scanner
-    public static int chooseRoom(Scanner sc) 
-    {
-        System.out.print("\nEnter room number: ");
-        return sc.nextInt();
+    public String getCompartment() {
+        return compartment;
     }
 
-    public static String chooseCompartment(Scanner sc) 
-    {
-        sc.nextLine(); // consume newline
-        System.out.print("\nEnter compartment (Single/Double): ");
+    public void setCompartment(String compartment) {
+        this.compartment = compartment;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    // Display method
+    public void display() {
+        System.out.println("Room: " + roomNumber + " | Floor: " + floor + " | Compartment: " + compartment);
+    }
+
+    // Static input methods
+    public static String chooseRoom(Scanner sc) {
+        System.out.print("Enter room number: ");
+        return sc.nextLine();
+    }
+
+    public static String chooseCompartment(Scanner sc) {
+        System.out.print("Enter compartment: ");
         return sc.nextLine();
     }
 }

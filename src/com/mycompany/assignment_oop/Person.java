@@ -15,8 +15,7 @@ public abstract class Person
     protected String email;
     protected int phoneNumber;
 
-    public Person(String name, int ID, String email, int phoneNumber) 
-    {
+    public Person(String name, int ID, String email, int phoneNumber) {
         this.name = name;
         this.ID = ID;
         this.email = email;
@@ -25,8 +24,23 @@ public abstract class Person
 
     public abstract void displayInfo();
 
-    public String toFileString() 
-    {
+    public String toFileString() {
         return name + "," + ID + "," + email + "," + phoneNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return ID;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getPhone() {
+        return phoneNumber;
     }
 }
