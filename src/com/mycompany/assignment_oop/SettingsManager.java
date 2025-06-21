@@ -263,6 +263,7 @@ public class SettingsManager {
             mahallahList.clear();
 
             while ((line = br.readLine()) != null) {
+                System.out.println("Reading line: " + line);
                 String[] parts = line.split(":");
                 if (parts.length == 2) {
                     String name = parts[0].trim();
@@ -270,26 +271,29 @@ public class SettingsManager {
                     
                     String[] blockParts = parts[1].split(",");
                     for (String blockData : blockParts) {
-                        if (blockData.contains("[")) {
+                        if (blockData.contains("[") && blockData.contains("]")) {
                             String blockName = blockData.substring(0, blockData.indexOf('[')).trim();
                             String roomData = blockData.substring(blockData.indexOf('[') + 1, blockData.indexOf(']'));
+
                             Block block = new Block(blockName.charAt(0));
-                            
+
                             if (!roomData.isEmpty()) {
                                 String[] roomParts = roomData.split(";");
                                 for (String roomEntry : roomParts) {
                                     String[] roomDetails = roomEntry.split("-");
                                     if (roomDetails.length >= 3) {
-                                    String roomNo = roomDetails[0];
-                                    String floor = roomDetails[1];
-                                    String compartment = roomDetails[2];
-                                    block.addRoom(new Room(roomNo, floor, compartment));
+                                        String roomNo = roomDetails[0];
+                                        String floor = roomDetails[1];
+                                        String compartment = roomDetails[2];
+                                        block.addRoom(new Room(roomNo, floor, compartment));
                                     }
+                                }
                             }
+                            m.addBlock(block);
+                        } else {
+                            System.out.println("⚠️ Skipping invalid block data: " + blockData);
                         }
-                        m.addBlock(block);
                     }
-                }
                     mahallahList.add(m);
                 }
             }
