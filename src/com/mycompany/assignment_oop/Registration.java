@@ -18,8 +18,9 @@ public class Registration
     private final ArrayList<Student> studentList;
     private final ArrayList<Staff> staffList;
 
-    private final String STUDENT_FILE = "C:\\Users\\LENOVO\\OneDrive - International Islamic University Malaysia\\Documents\\NetBeansProjects\\PROJECT_OOP\\src\\MahallahManagementSystem\\Student.txt";
-    private final String STAFF_FILE = "C:\\Users\\LENOVO\\OneDrive - International Islamic University Malaysia\\Documents\\NetBeansProjects\\PROJECT_OOP\\src\\MahallahManagementSystem\\Staff.txt";
+    private final String STUDENT_FILE = "src/data/students.txt";
+    private final String STAFF_FILE = "src/data/staff.txt";
+
 
     public Registration() //1st choice
     {

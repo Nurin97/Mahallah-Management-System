@@ -14,44 +14,49 @@ import javafx.geometry.Pos;
 public class RegisterStaffGUI {
     
     public Parent getView(MahallahMain app) {
+        // Title (centered)
         Label title = new Label("Staff Registration");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
+        // Create a container for left-aligned content
+        VBox leftAlignedContent = new VBox(10);
+        leftAlignedContent.setAlignment(Pos.TOP_LEFT);
+        leftAlignedContent.setStyle("-fx-padding: 0 0 0 20;");
+
+        // Input Fields with left-aligned labels
         Label nameLabel = new Label("Name:");
         TextField nameField = new TextField();
+        nameField.setPromptText("Enter full name");
 
-        Label idLabel = new Label("Staff ID:");
-        TextField idField = new TextField();
+        Label staffIdLabel = new Label("Staff ID:");
+        TextField staffIdField = new TextField();
+        staffIdField.setPromptText("Enter staff ID");
 
         Label phoneLabel = new Label("Phone number:");
         TextField phoneField = new TextField();
+        phoneField.setPromptText("Enter phone number");
 
         Label emailLabel = new Label("Email:");
         TextField emailField = new TextField();
-
-        Label positionLabel = new Label("Position:");
-        TextField positionField = new TextField();
-
+        emailField.setPromptText("Enter email");
+        
         Label mahallahLabel = new Label("Choose your Mahallah:");
         ComboBox<String> mahallahBox = new ComboBox<>();
         mahallahBox.getItems().addAll("Faruq", "Siddiq", "Ali", "Bilal", "Uthman", "Salahuddin",
                 "Ruqayyah", "Aminah", "Asiah", "Asma'", "Hafsah", "Halimah", "Maryam", "Nusaibah", "Safiyyah", "Sumayyah");
-
-        Label blockLabel = new Label("Choose your Block:");
-        ComboBox<String> blockBox = new ComboBox<>();
-        blockBox.getItems().addAll("A", "B", "C", "D", "E", "F", "G");
 
         Label floorLabel = new Label("Choose your Floor:");
         RadioButton floor1 = new RadioButton("Ground Floor");
         RadioButton floor2 = new RadioButton("Floor 1");
         RadioButton floor3 = new RadioButton("Floor 2");
         RadioButton floor4 = new RadioButton("Floor 3");
+        
         ToggleGroup floorGroup = new ToggleGroup();
         floor1.setToggleGroup(floorGroup);
         floor2.setToggleGroup(floorGroup);
         floor3.setToggleGroup(floorGroup);
         floor4.setToggleGroup(floorGroup);
-
+        
         Label roomLabel = new Label("Room number:");
         TextField roomField = new TextField();
 
@@ -66,73 +71,65 @@ public class RegisterStaffGUI {
         compC.setToggleGroup(compGroup);
         compD.setToggleGroup(compGroup);
 
-        Label messageLabel = new Label();
-        HBox messageBox = new HBox(messageLabel);
-        messageBox.setAlignment(Pos.CENTER);
+       
+        leftAlignedContent.getChildren().addAll(
+            nameLabel, nameField,
+            staffIdLabel, staffIdField,
+            phoneLabel, phoneField,
+            emailLabel, emailField,
+            mahallahLabel, mahallahBox,
+            floorLabel, new HBox(10, floor1, floor2, floor3, floor4),
+            roomLabel, roomField,
+            compLabel, new HBox(10, compA, compB, compC, compD)
+        );
 
+        // Buttons (centered)
         Button submitBtn = new Button("Submit");
-        submitBtn.setPrefWidth(80);
-        submitBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                try {
-                    String name = nameField.getText().trim();
-                    int id = Integer.parseInt(idField.getText().trim());
-                    int phone = Integer.parseInt(phoneField.getText().trim());
-                    String email = emailField.getText().trim();
-                    String position = positionField.getText().trim();
-                    String mahallah = mahallahBox.getValue();
-                    String block = blockBox.getValue();
-                    String floor = floorGroup.getSelectedToggle() != null ? ((RadioButton) floorGroup.getSelectedToggle()).getText() : "";
-                    int room = Integer.parseInt(roomField.getText().trim());
-                    String compartment = compGroup.getSelectedToggle() != null ? ((RadioButton) compGroup.getSelectedToggle()).getText() : "";
-
-                    Staff staff = new Staff(name, id, email, phone, position, mahallah, block, floor, room, compartment);
-                    app.getRegistration().addStaff(staff);
-
-                    // Save to file
-                    String record = staff.toFileString() + "\n";
-                    try (FileWriter writer = new FileWriter("C:\\Users\\LENOVO\\OneDrive - International Islamic University Malaysia\\Documents\\NetBeansProjects\\PROJECT_OOP\\src\\MahallahManagementSystem\\Staff.txt", true)) {
-                        writer.write(record);
-                        messageLabel.setText("Staff registered successfully.");
-                    } catch (IOException ex) {
-                        messageLabel.setText("Error saving staff.");
-                    }
-                } catch (NumberFormatException ex) {
-                    messageLabel.setText("ID, Phone, and Room must be numbers.");
-                }
+        submitBtn.setPrefWidth(100);
+        submitBtn.setOnAction(e -> {
+            if (validateInput(nameField, staffIdField, phoneField, emailField)) {
+                System.out.println("Staff registered: " + nameField.getText());
+                showAlert("Success", "Staff registered successfully!");
             }
         });
 
         Button backBtn = new Button("Back");
-        backBtn.setPrefWidth(80);
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                app.setScene(app.getMahallahMenu());
-            }
-        });
-
-        VBox layout = new VBox(10);
-        layout.setStyle("-fx-padding: 15;");
-        layout.setAlignment(Pos.TOP_LEFT);
+        backBtn.setPrefWidth(100);
+        backBtn.setOnAction(e -> app.setScene(app.getMahallahMenu()));
 
         HBox buttonBox = new HBox(20, submitBtn, backBtn);
         buttonBox.setAlignment(Pos.CENTER);
 
+        // Main layout (centered overall, with left-aligned content)
+        VBox layout = new VBox(15);
+        layout.setStyle("-fx-padding: 25;");
+        layout.setAlignment(Pos.TOP_CENTER);
         layout.getChildren().addAll(
-                title, nameLabel, nameField, idLabel, idField,
-                phoneLabel, phoneField, emailLabel, emailField,
-                positionLabel, positionField,
-                mahallahLabel, mahallahBox,
-                blockLabel, blockBox,
-                floorLabel, new HBox(10, floor1, floor2, floor3, floor4),
-                roomLabel, roomField,
-                compLabel, new HBox(10, compA, compB, compC, compD),
-                buttonBox, messageBox
+            title,
+            leftAlignedContent,
+            buttonBox
         );
 
         return layout;
     }
+
+    private boolean validateInput(TextField... fields) {
+        for (TextField field : fields) {
+            if (field.getText().trim().isEmpty()) {
+                showAlert("Error", "All fields must be filled!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }
 

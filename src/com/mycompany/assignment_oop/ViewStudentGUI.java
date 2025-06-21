@@ -1,22 +1,46 @@
 package com.mycompany.assignment_oop;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.Button;
-import javafx.scene.text.Text;
 import javafx.scene.Parent;
-
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 public class ViewStudentGUI {
     public Parent getView(MahallahMain app) {
         VBox mainLayout = new VBox(10);
         mainLayout.setStyle("-fx-padding: 20");
         mainLayout.setAlignment(Pos.CENTER);
+        
+        // Title
+        Text label = new Text("View Student Information");
+        
+        // Display area
+        TextArea taDisplay = new TextArea();
+        taDisplay.setEditable(false);
+        taDisplay.setPrefHeight(400);
+        
+        // Load data from relative path
+        String filePath = "src/data/students.txt"; // Make sure this path exists
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            taDisplay.setText(content.toString());
+        } catch (IOException ex) {
+            taDisplay.setText("Error loading student data: " + ex.getMessage());
+        }
 
+        // Back button
         Button btnBack = new Button("Back");
-
         btnBack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -24,7 +48,8 @@ public class ViewStudentGUI {
             }
         });
 
-        mainLayout.getChildren().add(btnBack);
+        // Add components to layout
+        mainLayout.getChildren().addAll(label, taDisplay, btnBack);
         return mainLayout;
     }
 }

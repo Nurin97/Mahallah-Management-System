@@ -93,7 +93,7 @@ public class RegisterStudentGUI{
 
                     // Save to file
                     String record = student.toFileString() + "\n";
-                    try (FileWriter writer = new FileWriter("C:\\Users\\LENOVO\\OneDrive - International Islamic University Malaysia\\Documents\\NetBeansProjects\\PROJECT_OOP\\src\\MahallahManagementSystem\\Student.txt", true)) {
+                    try (FileWriter writer = new FileWriter("src/data/students.txt", true)) {
                         writer.write(record);
                         messageLabel.setText("Student registered successfully.");
                     } catch (IOException ex) {

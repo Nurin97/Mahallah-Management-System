@@ -13,7 +13,7 @@ public class SettingsManager {
     
     private static SettingsManager instance = null;
     private ArrayList<Mahallah> mahallahList;
-    private final String FILE_NAME = "mahallahs.txt";
+    private final String FILE_NAME = "src/data/mahallahs.txt";
 
     private SettingsManager() {
         mahallahList = new ArrayList<>();
@@ -298,7 +298,7 @@ public class SettingsManager {
         }
     }
 
-    private void saveMahallahs() {
+    public void saveMahallahs() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
             for (Mahallah m : mahallahList) {
                 StringBuilder sb = new StringBuilder();
@@ -313,8 +313,8 @@ public class SettingsManager {
                     for (int j = 0; j < rooms.size(); j++) {
                         Room r = rooms.get(j);
                         sb.append(r.getRoomNumber()).append("-")
-                                .append(r.getFloor())
-                                .append(r.getCompartment());
+                            .append(r.getFloor()).append("-") 
+                            .append(r.getCompartment());
                         
                         if (j < rooms.size() - 1) sb.append(";");
                         }

@@ -23,6 +23,7 @@ public class SettingsGUI {
     private ListView<Room> roomListView;
     private ComboBox<Mahallah> mahallahComboBox;
     private ComboBox<Block> blockComboBox;
+    private ComboBox<Mahallah> roomsMahallahComboBox; // Added reference for rooms tab combo
     private Mahallah selectedMahallah;
     private Block selectedBlock;
     private MahallahMain app;
@@ -108,6 +109,7 @@ public class SettingsGUI {
                     Mahallah mahallah = getItem();
                     if (mahallah != null) {
                         settingsManager.getMahallahList().remove(mahallah);
+                        settingsManager.saveMahallahs(); // Save changes to file
                         refreshMahallahList();
                     }
                 });
@@ -144,6 +146,7 @@ public class SettingsGUI {
                     Block block = getItem();
                     if (block != null && selectedMahallah != null) {
                         selectedMahallah.removeBlock(block.getBlockName());
+                        settingsManager.saveMahallahs(); // Save changes to file
                         refreshBlockList();
                     }
                 });
@@ -180,6 +183,7 @@ public class SettingsGUI {
                     Room room = getItem();
                     if (room != null && selectedBlock != null) {
                         selectedBlock.removeRoom(room.getRoomNumber());
+                        settingsManager.saveMahallahs(); // Save changes to file
                         refreshRoomList();
                     }
                 });
@@ -291,10 +295,10 @@ public class SettingsGUI {
         Label title = new Label("Manage Rooms");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         
-        ComboBox<Mahallah> mahallahCombo = new ComboBox<>();
-        mahallahCombo.setPromptText("Select Mahallah");
-        mahallahCombo.setPrefWidth(150);
-        mahallahCombo.setOnAction(this::handleMahallahForRooms);
+        roomsMahallahComboBox = new ComboBox<>(); // Store reference
+        roomsMahallahComboBox.setPromptText("Select Mahallah");
+        roomsMahallahComboBox.setPrefWidth(150);
+        roomsMahallahComboBox.setOnAction(this::handleMahallahForRooms);
         
         blockComboBox = new ComboBox<>();
         blockComboBox.setPromptText("Select Block");
@@ -308,10 +312,10 @@ public class SettingsGUI {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
-        header.getChildren().addAll(title, spacer, mahallahCombo, blockComboBox, btnAddRoom);
+        header.getChildren().addAll(title, spacer, roomsMahallahComboBox, blockComboBox, btnAddRoom);
         
         // Sync combo boxes
-        mahallahCombo.setItems(FXCollections.observableArrayList(settingsManager.getMahallahList()));
+        roomsMahallahComboBox.setItems(FXCollections.observableArrayList(settingsManager.getMahallahList()));
         
         // Simple list view
         roomListView = new ListView<>();
@@ -368,11 +372,16 @@ public class SettingsGUI {
             if (!name.trim().isEmpty()) {
                 Mahallah newMahallah = new Mahallah(name);
                 settingsManager.getMahallahList().add(newMahallah);
+                
+                // Save to file
+                settingsManager.saveMahallahs();
+                
                 refreshMahallahList();
                 showSimpleAlert("Success", "Mahallah added successfully!");
             }
         });
     }
+    
     private void showEditMahallahDialog(Mahallah m) {
         TextInputDialog dialog = new TextInputDialog(m.getName());
         dialog.setTitle("Edit Mahallah");
@@ -380,8 +389,8 @@ public class SettingsGUI {
         dialog.setContentText("New name:");
         dialog.showAndWait().ifPresent(name -> {
             if (!name.trim().isEmpty()) {
-                // Assuming you have a setName method
                 m.setName(name.trim());
+                settingsManager.saveMahallahs(); // Save changes to file
                 refreshMahallahList();
                 showSimpleAlert("Updated", "Mahallah renamed");
             }
@@ -404,6 +413,7 @@ public class SettingsGUI {
                 char blockChar = name.toUpperCase().charAt(0);
                 Block newBlock = new Block(blockChar);
                 selectedMahallah.addBlock(newBlock);
+                settingsManager.saveMahallahs(); // Save changes to file
                 refreshBlockList();
                 showSimpleAlert("Success", "Block added successfully!");
             }
@@ -418,6 +428,7 @@ public class SettingsGUI {
         dialog.showAndWait().ifPresent(name -> {
             if (!name.trim().isEmpty()) {
                 b.setBlockName(name.toUpperCase().charAt(0));
+                settingsManager.saveMahallahs(); // Save changes to file
                 refreshBlockList();
                 showSimpleAlert("Updated", "Block renamed");
             }
@@ -464,6 +475,7 @@ public class SettingsGUI {
         
         dialog.showAndWait().ifPresent(room -> {
             selectedBlock.addRoom(room);
+            settingsManager.saveMahallahs(); // Save changes to file
             refreshRoomList();
             showSimpleAlert("Success", "Room added successfully!");
         });
@@ -477,6 +489,7 @@ public class SettingsGUI {
         dialog.showAndWait().ifPresent(name -> {
             if (!name.trim().isEmpty()) {
                 r.setRoomNumber(name.trim());
+                settingsManager.saveMahallahs(); // Save changes to file
                 refreshRoomList();
                 showSimpleAlert("Updated", "Room renamed");
             }
@@ -500,6 +513,9 @@ public class SettingsGUI {
         }
         if (mahallahComboBox != null) {
             mahallahComboBox.setItems(items);
+        }
+        if (roomsMahallahComboBox != null) {
+            roomsMahallahComboBox.setItems(items);
         }
     }
     
