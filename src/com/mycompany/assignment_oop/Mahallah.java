@@ -211,4 +211,22 @@ public class Mahallah {
             if (sc.hasNextInt()) {
                 choice = sc.nextInt();
                 sc.nextLine();
-              
+                if (choice >= 1 && choice <= roomsOnFloor.size()) {
+                    break;
+                } else {
+                    System.out.print("Invalid choice. Enter 1 to " + roomsOnFloor.size() + ": ");
+                }
+            } else {
+                System.out.print("Invalid input. Enter a number: ");
+                sc.nextLine();
+            }
+        }
+
+        return roomsOnFloor.get(choice - 1);
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+}

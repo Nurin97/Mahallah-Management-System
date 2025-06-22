@@ -73,4 +73,7 @@ public class MahallahMain extends Application {
         return settings;
     }
 
-    public static void main(S
+    public static void main(String[] args) {
+        launch(args);
+    }
+}

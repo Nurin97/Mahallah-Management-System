@@ -2,4 +2,6 @@ Faruq|Available:Male:B[201-2-A]
 Siddiq|Available:Male:B[202-2-B]
 Bilal|Available:Male:A[305-3-B],B[101-1-C]
 Aminah|Available:Female:C[103-1-C]
-Asiah|Available:Mixed:D[410
+Asiah|Available:Mixed:D[410-4-D]
+Hafsa|Available:Female:
+Sumayyah|Available:Female:

@@ -117,4 +117,80 @@ public class StaffRegistrationGUI {
                 String mahallah = mahallahBox.getValue();
                 String block = "PG";
                 Toggle floorToggle = floorGroup.getSelectedToggle();
-                String floor = (floorToggle != null) ? ((RadioButton) 
+                String floor = (floorToggle != null) ? ((RadioButton) floorToggle).getText() : "";
+                String room = roomField.getText().trim();
+                Toggle compToggle = compGroup.getSelectedToggle();
+                String compartment = (compToggle != null) ? ((RadioButton) compToggle).getText() : "";
+
+                if (name.isEmpty() || gender.isEmpty() || staffId.isEmpty() || phone.isEmpty()
+                        || email.isEmpty() || position.isEmpty() || mahallah == null
+                        || floor.isEmpty() || room.isEmpty() || compartment.isEmpty()) {
+                    messageLabel.setText("Please fill in all the fields.");
+                    messageLabel.setStyle("-fx-text-fill: red;");
+                    return;
+                }
+
+                String line = String.join(", ",
+                        name, gender, staffId, phone, email, position,
+                        mahallah, block, floor, room, compartment
+                );
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/staffs.txt", true))) {
+                    writer.write(line);
+                    writer.newLine();
+                    messageLabel.setText("Successfully registered staff!");
+                    messageLabel.setStyle("-fx-text-fill: green;");
+                } catch (IOException ex) {
+                    messageLabel.setText("Error saving data: " + ex.getMessage());
+                    messageLabel.setStyle("-fx-text-fill: red;");
+                }
+
+                // Clear fields
+                nameField.clear();
+                genderGroup.selectToggle(null);
+                staffIdField.clear();
+                phoneField.clear();
+                emailField.clear();
+                positionField.clear();
+                mahallahBox.getSelectionModel().clearSelection();
+                floorGroup.selectToggle(null);
+                roomField.clear();
+                compGroup.selectToggle(null);
+            }
+        });
+
+        Button backBtn = new Button("Back");
+        backBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                app.setScene(app.getMahallahMenu());
+            }
+        });
+
+        submitBtn.setPrefWidth(80);
+        backBtn.setPrefWidth(80);
+        HBox buttonBox = new HBox(20, submitBtn, backBtn);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        VBox layout = new VBox(10);
+        layout.setStyle("-fx-padding: 15;");
+        layout.getChildren().addAll(
+                title,
+                nameLabel, nameField,
+                genderLabel, genderBox,
+                staffIdLabel, staffIdField,
+                phoneLabel, phoneField,
+                emailLabel, emailField,
+                positionLabel, positionField,
+                mahallahLabel, mahallahBox,
+                blockLabel, blockValueLabel,
+                floorLabel, floorBox,
+                roomLabel, roomField,
+                compartmentLabel, compBox,
+                buttonBox,
+                messageBox
+        );
+
+        return layout;
+    }
+}

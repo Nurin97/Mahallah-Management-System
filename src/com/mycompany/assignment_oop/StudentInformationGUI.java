@@ -50,4 +50,15 @@ public class StudentInformationGUI {
             e.printStackTrace();
         }
 
-        table.setIte
+        table.setItems(dataList);
+
+        Label totalLabel = new Label("Total Students: " + dataList.size());
+        totalLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Button btnBack = new Button("Back");
+        btnBack.setOnAction(e -> app.setScene(app.getMahallahMenu()));
+
+        layout.getChildren().addAll(title, table, totalLabel, btnBack);
+        return layout;
+    }
+}

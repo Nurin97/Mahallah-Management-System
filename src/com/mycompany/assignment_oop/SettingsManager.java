@@ -365,4 +365,24 @@ public class SettingsManager {
 
             if (name.equalsIgnoreCase("Faruq")) {
                 Block b = m.getBlock('B');
-                if (b != null) b.addRoo
+                if (b != null) b.addRoom(new Room("201", "2", "A"));
+            } else if (name.equalsIgnoreCase("Siddiq")) {
+                Block b = m.getBlock('B');
+                if (b != null) b.addRoom(new Room("202", "2", "B"));
+            } else if (name.equalsIgnoreCase("Aminah")) {
+                Block b = m.getBlock('C');
+                if (b != null) b.addRoom(new Room("103", "1", "C"));
+            } else if (name.equalsIgnoreCase("Bilal")) {
+                Block bA = m.getBlock('A');
+                Block bB = m.getBlock('B');
+                if (bA != null) bA.addRoom(new Room("305", "3", "B"));
+                if (bB != null) bB.addRoom(new Room("101", "1", "C"));
+            } else if (name.equalsIgnoreCase("Asiah")) {
+                Block b = m.getBlock('D');
+                if (b != null) b.addRoom(new Room("410", "4","D"));
+            }
+
+            mahallahList.add(m);
+        }
+    }
+}

@@ -139,4 +139,53 @@ public class StudentRegistrationGUI {
                     mahallah, block, floor, room, compartment);
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/students.txt", true))) {
-                writer.wri
+                writer.write(line);
+                writer.newLine();
+                messageLabel.setText("Successfully registered student!");
+                messageLabel.setStyle("-fx-text-fill: green;");
+            } catch (IOException ex) {
+                messageLabel.setText("Error saving student data.");
+                ex.printStackTrace();
+            }
+
+            // Clear form
+            nameField.clear();
+            matrixField.clear();
+            phoneField.clear();
+            emailField.clear();
+            kuliyyahField.clear();
+            genderGroup.selectToggle(null);
+            mahallahBox.getItems().clear();
+            blockBox.getSelectionModel().clearSelection();
+            floorGroup.selectToggle(null);
+            roomField.clear();
+            compGroup.selectToggle(null);
+        });
+
+        btnBack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                app.setScene(app.getMahallahMenu());
+            }
+        });
+
+        layout.getChildren().addAll(
+                title,
+                nameLabel, nameField,
+                matrixLabel, matrixField,
+                phoneLabel, phoneField,
+                emailLabel, emailField,
+                kuliyyahLabel, kuliyyahField,
+                genderLabel, genderBox,
+                mahallahLabel, mahallahBox,
+                blockLabel, blockBox,
+                floorLabel, floorBox,
+                roomLabel, roomField,
+                compartmentLabel, compBox,
+                buttonBox,
+                messageBox
+        );
+
+        return layout;
+    }
+}
