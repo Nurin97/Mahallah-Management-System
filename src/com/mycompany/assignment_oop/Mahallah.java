@@ -16,8 +16,9 @@ public class Mahallah
     private String name;
     private ArrayList<Block> blocks;
 
-    public Mahallah(String name) {
+    public Mahallah(String name, String status) {
         this.name = name;
+        this.status = status;
         this.blocks = new ArrayList<>();
     }
 
@@ -215,4 +216,15 @@ public class Mahallah
 
         return roomsOnFloor.get(choice - 1);
     }
+
+    private String status = "Available"; // 🟢 Default
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

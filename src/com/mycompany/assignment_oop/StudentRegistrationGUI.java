@@ -11,7 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 
 
-public class RegisterStudentGUI{
+public class StudentRegistrationGUI{
     
     public Parent getView(MahallahMain app) {
         Label title = new Label("Student Registration");

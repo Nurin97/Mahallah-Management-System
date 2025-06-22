@@ -258,78 +258,83 @@ public class SettingsManager {
     }
 
     private void loadMahallahs() {
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        mahallahList.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
-            mahallahList.clear();
+            while ((line = reader.readLine()) != null) {
+                if (!line.contains("|")) continue; // safety check
 
-            while ((line = br.readLine()) != null) {
-                System.out.println("Reading line: " + line);
-                String[] parts = line.split(":");
-                if (parts.length == 2) {
-                    String name = parts[0].trim();
-                    Mahallah m = new Mahallah(name);
-                    
-                    String[] blockParts = parts[1].split(",");
-                    for (String blockData : blockParts) {
-                        if (blockData.contains("[") && blockData.contains("]")) {
-                            String blockName = blockData.substring(0, blockData.indexOf('[')).trim();
-                            String roomData = blockData.substring(blockData.indexOf('[') + 1, blockData.indexOf(']'));
+                String[] parts = line.split("\\|"); // name and status+blocks
+                String name = parts[0].trim();
+                String[] statusAndBlocks = parts[1].split(":", 2); // [status, A[],B[]]
 
-                            Block block = new Block(blockName.charAt(0));
+                String status = statusAndBlocks[0].trim();
+                String blocksData = statusAndBlocks.length > 1 ? statusAndBlocks[1] : "";
 
-                            if (!roomData.isEmpty()) {
-                                String[] roomParts = roomData.split(";");
-                                for (String roomEntry : roomParts) {
-                                    String[] roomDetails = roomEntry.split("-");
-                                    if (roomDetails.length >= 3) {
-                                        String roomNo = roomDetails[0];
-                                        String floor = roomDetails[1];
-                                        String compartment = roomDetails[2];
-                                        block.addRoom(new Room(roomNo, floor, compartment));
-                                    }
+                Mahallah mahallah = new Mahallah(name, status);
+
+                if (!blocksData.isEmpty()) {
+                    String[] blocks = blocksData.split("],");
+                    for (String blockInfo : blocks) {
+                        blockInfo = blockInfo.trim();
+                        if (blockInfo.endsWith("]")) blockInfo = blockInfo.substring(0, blockInfo.length() - 1);
+
+                        String[] blockParts = blockInfo.split("\\[");
+                        if (blockParts.length != 2) continue;
+
+                        char blockName = blockParts[0].trim().charAt(0);
+                        String roomData = blockParts[1];
+                        Block block = new Block(blockName);
+
+                        if (!roomData.isEmpty()) {
+                            String[] roomDetails = roomData.split(",");
+                            for (String roomStr : roomDetails) {
+                                String[] rParts = roomStr.split("-");
+                                if (rParts.length == 3) {
+                                    String roomNum = rParts[0];
+                                    String floor = rParts[1];
+                                    String compartment = rParts[2];
+                                    block.addRoom(new Room(roomNum, floor, compartment));
                                 }
                             }
-                            m.addBlock(block);
-                        } else {
-                            System.out.println("⚠️ Skipping invalid block data: " + blockData);
                         }
+                        mahallah.addBlock(block);
                     }
-                    mahallahList.add(m);
                 }
+
+                mahallahList.add(mahallah);
             }
         } catch (IOException e) {
             System.out.println("Error loading Mahallahs: " + e.getMessage());
         }
     }
 
+
     public void saveMahallahs() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
             for (Mahallah m : mahallahList) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(m.getName()).append(":");
-                
+                sb.append(m.getName()).append("|").append(m.getStatus()).append(":");
                 ArrayList<Block> blocks = m.getBlocks();
                 for (int i = 0; i < blocks.size(); i++) {
                     Block b = blocks.get(i);
                     sb.append(b.getBlockName()).append("[");
-                    
+
                     ArrayList<Room> rooms = b.getRooms();
                     for (int j = 0; j < rooms.size(); j++) {
                         Room r = rooms.get(j);
                         sb.append(r.getRoomNumber()).append("-")
                             .append(r.getFloor()).append("-") 
                             .append(r.getCompartment());
-                        
-                        if (j < rooms.size() - 1) sb.append(";");
-                        }
 
-                        sb.append("]");
-                        if (i < blocks.size() - 1) sb.append(",");
+                    if (j < rooms.size() - 1) sb.append(",");
                     }
-
-                    bw.write(sb.toString());
-                    bw.newLine();
+                    sb.append("]");
+                    if (i < blocks.size() - 1) sb.append(",");
                 }
+                writer.write(sb.toString());
+                writer.newLine();
+            }
             
         } catch (IOException e) {
             System.out.println("Error saving Mahallahs: " + e.getMessage());
@@ -340,7 +345,9 @@ public class SettingsManager {
         String[] names = {"Faruq", "Siddiq", "Bilal", "Aminah", "Asiah", "Hafsa"};
 
         for (String name : names) {
-            Mahallah m = new Mahallah(name);
+            Mahallah m = new Mahallah(name, "Available"); 
+
+            // Add blocks A to D
             m.addBlock(new Block('A'));
             m.addBlock(new Block('B'));
             m.addBlock(new Block('C'));

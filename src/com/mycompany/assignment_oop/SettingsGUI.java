@@ -210,13 +210,42 @@ public class SettingsGUI {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         
         // Create tabs
+        Tab overviewTab = new Tab("Overview", createOverviewTab());
         Tab mahallahTab = new Tab("Mahallahs", createMahallahTab());
         Tab blockTab = new Tab("Blocks", createBlockTab());
         Tab roomTab = new Tab("Rooms", createRoomTab());
         
-        tabPane.getTabs().addAll(mahallahTab, blockTab, roomTab);
+        tabPane.getTabs().addAll(overviewTab, mahallahTab, blockTab, roomTab);
         return tabPane;
     }
+    private VBox createOverviewTab() {
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(20));
+        root.setStyle("-fx-background-color: #f9f9f9;");
+
+        // Tab contents
+        Tab summaryTab = new Tab("Summary", createSummaryView());
+        Tab detailsTab = new Tab("Available Room", createDetailsView());
+
+        // TabPane with both Summary & Available Room
+        TabPane overviewTabs = new TabPane();
+        overviewTabs.getTabs().addAll(summaryTab, detailsTab);
+        overviewTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        // Add a border AROUND the tab pane
+        VBox borderedTabPane = new VBox(overviewTabs);
+        borderedTabPane.setStyle(
+            "-fx-border-color: grey;" +
+            "-fx-border-width: 2;" +
+            "-fx-padding: 10;" +
+            "-fx-background-color: #f0f0f0;" // light grey background
+        );
+
+        root.getChildren().add(borderedTabPane);
+        return root;
+    }
+
+
     
     private VBox createMahallahTab() {
         VBox content = new VBox(15);
@@ -360,42 +389,183 @@ public class SettingsGUI {
         selectedMahallah = source.getValue();
         refreshBlockComboBox();
     }
+
+    private ScrollPane createSummaryView() {
+        VBox container = new VBox(15);
+        container.setPadding(new Insets(15));
+
+        for (Mahallah m : settingsManager.getMahallahList()) {
+            VBox box = new VBox(8);
+            box.setPadding(new Insets(10));
+            box.setStyle(
+                "-fx-background-color: white;" +
+                "-fx-border-color: #cccccc;" +
+                "-fx-border-radius: 8;" +
+                "-fx-background-radius: 8;" +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 4, 0, 0, 2);"
+            );
+
+            Label name = new Label("🏠 " + m.getName());
+            name.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+
+            Label status = new Label("📌 Status: " + m.getStatus());
+            status.setTextFill(Color.DARKBLUE);
+
+            int totalBlocks = m.getBlocks().size();
+            int totalRooms = m.getBlocks().stream().mapToInt(b -> b.getRooms().size()).sum();
+
+            Label blockInfo = new Label("📦 Total Blocks: " + totalBlocks);
+            Label roomInfo = new Label("🚪 Total Rooms: " + totalRooms);
+
+            box.getChildren().addAll(name, status, blockInfo, roomInfo);
+            container.getChildren().add(box);
+        }
+
+        ScrollPane scroll = new ScrollPane(container);
+        scroll.setFitToWidth(true);
+        scroll.setStyle("-fx-background: #f8f9fa;"); // Light grey background
+        return scroll;
+    }
+
+
+    private ScrollPane createDetailsView() {
+        VBox container = new VBox(10);
+        container.setPadding(new Insets(10));
+
+        for (Mahallah m : settingsManager.getMahallahList()) {
+            if (m.getStatus().equalsIgnoreCase("Under Maintenance")) continue;
+
+            Label mLabel = new Label("🏠 " + m.getName() + " (" + m.getStatus() + ")");
+            mLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+            mLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0 0 1 0; -fx-padding: 4;");
+            container.getChildren().add(mLabel);
+
+            for (Block b : m.getBlocks()) {
+                Label bLabel = new Label("   🧩 Block " + b.getBlockName());
+                bLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
+                bLabel.setStyle("-fx-background-color: #e9ecef; -fx-padding: 3 6; -fx-border-radius: 5; -fx-background-radius: 5;");
+
+                VBox blockBox = new VBox(5);
+                blockBox.setPadding(new Insets(5, 10, 5, 30));
+                blockBox.getChildren().add(bLabel);
+
+                FlowPane roomFlow = new FlowPane(10, 10);
+                roomFlow.setPadding(new Insets(0, 0, 0, 10));
+
+                for (Room r : b.getRooms()) {
+                    Label roomLabel = new Label("Room " + r.getRoomNumber());
+                    roomLabel.setPadding(new Insets(5));
+                    roomLabel.setStyle(
+                        "-fx-background-color: #28a745;" +  // ✅ Green = Available
+                        " -fx-text-fill: white; -fx-background-radius: 5;" +
+                        " -fx-border-color: #ccc; -fx-border-radius: 5;"
+                    );
+                    roomFlow.getChildren().add(roomLabel);
+                }
+
+                blockBox.getChildren().add(roomFlow);
+                container.getChildren().add(blockBox);
+            }
+        }
+
+        ScrollPane scroll = new ScrollPane(container);
+        scroll.setFitToWidth(true);
+        scroll.setStyle("-fx-background: #ffffff; -fx-border-color: #ccc;");
+        return scroll;
+    }
+
+
+    private String getColorForRoom(Room r) {
+        // Just return green for now – change later if rooms have statuses
+        return "#28a745"; // green
+    }
+
+
     
     // Simple Dialog Methods
     private void showAddMahallahDialog() {
-        TextInputDialog dialog = new TextInputDialog();
+        Dialog<Mahallah> dialog = new Dialog<>();
         dialog.setTitle("Add Mahallah");
-        dialog.setHeaderText("Enter Mahallah Name");
-        dialog.setContentText("Name:");
-        
-        dialog.showAndWait().ifPresent(name -> {
-            if (!name.trim().isEmpty()) {
-                Mahallah newMahallah = new Mahallah(name);
-                settingsManager.getMahallahList().add(newMahallah);
-                
-                // Save to file
-                settingsManager.saveMahallahs();
-                
-                refreshMahallahList();
-                showSimpleAlert("Success", "Mahallah added successfully!");
+        dialog.setHeaderText("Enter Mahallah Name and Status");
+
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField nameField = new TextField();
+        nameField.setPromptText("Mahallah Name");
+
+        ComboBox<String> statusBox = new ComboBox<>();
+        statusBox.getItems().addAll("Available", "Full", "Under Maintenance");
+        statusBox.setValue("Available"); // Default
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(nameField, 1, 0);
+        grid.add(new Label("Status:"), 0, 1);
+        grid.add(statusBox, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == addButtonType) {
+                return new Mahallah(nameField.getText(), statusBox.getValue());
             }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(mahallah -> {
+            settingsManager.getMahallahList().add(mahallah);
+            settingsManager.saveMahallahs();
+            refreshMahallahList();
+            showSimpleAlert("Success", "Mahallah added successfully!");
         });
     }
+
     
     private void showEditMahallahDialog(Mahallah m) {
-        TextInputDialog dialog = new TextInputDialog(m.getName());
+        Dialog<Mahallah> dialog = new Dialog<>();
         dialog.setTitle("Edit Mahallah");
-        dialog.setHeaderText("Rename Mahallah");
-        dialog.setContentText("New name:");
-        dialog.showAndWait().ifPresent(name -> {
-            if (!name.trim().isEmpty()) {
-                m.setName(name.trim());
-                settingsManager.saveMahallahs(); // Save changes to file
-                refreshMahallahList();
-                showSimpleAlert("Updated", "Mahallah renamed");
+        dialog.setHeaderText("Edit Name and Status");
+
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField nameField = new TextField(m.getName());
+
+        ComboBox<String> statusBox = new ComboBox<>();
+        statusBox.getItems().addAll("Available", "Full", "Under Maintenance");
+        statusBox.setValue(m.getStatus());
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(nameField, 1, 0);
+        grid.add(new Label("Status:"), 0, 1);
+        grid.add(statusBox, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                m.setName(nameField.getText().trim());
+                m.setStatus(statusBox.getValue());
             }
+            return null;
         });
+
+        dialog.showAndWait();
+        settingsManager.saveMahallahs();
+        refreshMahallahList();
+        showSimpleAlert("Updated", "Mahallah updated.");
     }
+
     
     private void showAddBlockDialog() {
         if (selectedMahallah == null) {

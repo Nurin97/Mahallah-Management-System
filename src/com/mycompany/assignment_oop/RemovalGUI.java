@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemoveGUI {
+public class RemovalGUI {
 
     private final String STUDENT_FILE = "src/data/students.txt";
     private final String STAFF_FILE = "src/data/staff.txt";

@@ -12,22 +12,22 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class ViewStaffGUI {
+public class StudentInformationGUI {
     public Parent getView(MahallahMain app) {
         VBox mainLayout = new VBox(10);
         mainLayout.setStyle("-fx-padding: 20");
         mainLayout.setAlignment(Pos.CENTER);
-
+        
         // Title
-        Text label = new Text("View Staff Information");
-
+        Text label = new Text("View Student Information");
+        
         // Display area
         TextArea taDisplay = new TextArea();
         taDisplay.setEditable(false);
         taDisplay.setPrefHeight(400);
-
-        // Load data from file
-        String filePath = "src/data/staff.txt";
+        
+        // Load data from relative path
+        String filePath = "src/data/students.txt"; // Make sure this path exists
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             StringBuilder content = new StringBuilder();
             String line;
@@ -36,7 +36,7 @@ public class ViewStaffGUI {
             }
             taDisplay.setText(content.toString());
         } catch (IOException ex) {
-            taDisplay.setText("Error loading staff data: " + ex.getMessage());
+            taDisplay.setText("Error loading student data: " + ex.getMessage());
         }
 
         // Back button
@@ -48,7 +48,7 @@ public class ViewStaffGUI {
             }
         });
 
-        // Add everything to layout
+        // Add components to layout
         mainLayout.getChildren().addAll(label, taDisplay, btnBack);
         return mainLayout;
     }

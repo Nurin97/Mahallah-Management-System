@@ -36,14 +36,14 @@ public class Register
         StackPane root = new StackPane(mainLayout);
         
         studentBtn.setOnAction(e -> {
-            RegisterStudentGUI studentForm = new RegisterStudentGUI();
+            StudentRegistrationGUI studentForm = new StudentRegistrationGUI();
             Parent studentView = studentForm.getView(app);
             
             root.getChildren().setAll(studentView);
         });
 
         staffBtn.setOnAction(e -> {
-            RegisterStaffGUI staffForm = new RegisterStaffGUI();
+            StaffRegistrationGUI staffForm = new StaffRegistrationGUI();
             Parent staffView = staffForm.getView(app);
             
             root.getChildren().setAll(staffView);

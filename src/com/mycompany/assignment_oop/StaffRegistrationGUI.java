@@ -11,7 +11,7 @@ import javafx.scene.Parent;
 import javafx.geometry.Pos;
 
 
-public class RegisterStaffGUI {
+public class StaffRegistrationGUI {
     
     public Parent getView(MahallahMain app) {
         // Title (centered)

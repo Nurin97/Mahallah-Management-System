@@ -15,11 +15,11 @@ public class MahallahMain extends Application {
 
     // GUI views
     private final MahallahMenuGUI menuView = new MahallahMenuGUI();
-    private final RegisterStudentGUI registerStudentView = new RegisterStudentGUI();
-    private final RegisterStaffGUI registerStaffView = new RegisterStaffGUI();
-    private final RemoveGUI removeView = new RemoveGUI();
-    private final ViewStudentGUI viewStudentView = new ViewStudentGUI();
-    private final ViewStaffGUI viewStaffView = new ViewStaffGUI();
+    private final StudentRegistrationGUI registerStudentView = new StudentRegistrationGUI();
+    private final StaffRegistrationGUI registerStaffView = new StaffRegistrationGUI();
+    private final RemovalGUI removeView = new RemovalGUI();
+    private final StudentInformationGUI viewStudentView = new StudentInformationGUI();
+    private final StaffInformationGUI viewStaffView = new StaffInformationGUI();
     private final SettingsGUI settingsView = new SettingsGUI();
 
     @Override
