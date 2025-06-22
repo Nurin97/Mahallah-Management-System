@@ -1,55 +1,49 @@
 package com.mycompany.assignment_oop;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class StaffInformationGUI {
+
     public Parent getView(MahallahMain app) {
-        VBox mainLayout = new VBox(10);
-        mainLayout.setStyle("-fx-padding: 20");
-        mainLayout.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
 
-        // Title
-        Text label = new Text("View Staff Information");
+        Label title = new Label("Staff Information");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // Display area
-        TextArea taDisplay = new TextArea();
-        taDisplay.setEditable(false);
-        taDisplay.setPrefHeight(400);
+        TableView<String[]> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Load data from file
-        String filePath = "src/data/staff.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-            taDisplay.setText(content.toString());
-        } catch (IOException ex) {
-            taDisplay.setText("Error loading staff data: " + ex.getMessage());
+        String[] headers = {
+            "Name", "Gender", "Staff ID", "Phone", "Email", "Position",
+            "Mahallah", "Block", "Floor", "Room", "Compartment"
+        };
+
+        for (int i = 0; i < headers.length; i++) {
+            final int colIndex = i;
+            TableColumn<String[], String> column = new TableColumn<>(headers[i]);
+            column.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()[colIndex]));
+            table.getColumns().add(column);
         }
 
-        // Back button
-        Button btnBack = new Button("Back");
-        btnBack.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                app.setScene(app.getMahallahMenu());
-            }
-        });
+        ObservableList<String[]> dataList = FXCollections.observableArrayList();
 
-        // Add everything to layout
-        mainLayout.getChildren().addAll(label, taDisplay, btnBack);
-        return mainLayout;
-    }
-}
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/data/staffs.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(",\\s*");
+                if (fields.length == headers.length) {
+                    dataList.add(fields);
+                }
+            }
+        } catch (IOException e) {
+            e.printStack

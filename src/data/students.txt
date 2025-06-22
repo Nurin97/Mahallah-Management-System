@@ -1,3 +1,4 @@
+Total Registered Students: 0
 Ammar Azwari, 12345, ammar@mail.com, 12345678, Computer Science, Faruq, B, 2, 201, A
 Ali Umar, 12346, ali@mail.com, 12345679, Electrical Engineering, Siddiq, B, 2, 202, B
 Fatimah Zahra, 12347, fatimah@mail.com, 12345680, Mechanical Engineering, Aminah, C, 1, 103, C
@@ -5,3 +6,5 @@ allyssa, 2414354, allyssa@gmail.com, 112343556, KAED, Halimah, D, Floor 2, 100, 
 allyssa, 2414354, allyssa@gmail.com, 112343556, KAED, Halimah, D, Floor 2, 100, B
 allyssa, 2414354, allyssa@gmail.com, 112343556, KAED, Halimah, D, Floor 2, 100, B
 allyssa, 2414354, allyssa@gmail.com, 112343556, KAED, Halimah, D, Floor 2, 100, B
+Syed, Male, 2412859, 0193748374, syed@gmail.com, KICT, Faruq, B, Ground Floor, 101, A
+zizan, Female, 328773828, 01178374833, zizan@gmail.com, KAED, Aminah, B, Floor 3, 305, A

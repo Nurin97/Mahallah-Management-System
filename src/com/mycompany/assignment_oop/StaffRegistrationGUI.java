@@ -1,66 +1,90 @@
 package com.mycompany.assignment_oop;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.Parent;
-import javafx.geometry.Pos;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StaffRegistrationGUI {
-    
+
+    private SettingsManager settingsManager = SettingsManager.getInstance(); 
+
     public Parent getView(MahallahMain app) {
-        // Title (centered)
+
         Label title = new Label("Staff Registration");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // Create a container for left-aligned content
-        VBox leftAlignedContent = new VBox(10);
-        leftAlignedContent.setAlignment(Pos.TOP_LEFT);
-        leftAlignedContent.setStyle("-fx-padding: 0 0 0 20;");
-
-        // Input Fields with left-aligned labels
+        // Input fields
         Label nameLabel = new Label("Name:");
         TextField nameField = new TextField();
-        nameField.setPromptText("Enter full name");
+
+        Label genderLabel = new Label("Gender:");
+        RadioButton maleBtn = new RadioButton("Male");
+        RadioButton femaleBtn = new RadioButton("Female");
+        ToggleGroup genderGroup = new ToggleGroup();
+        maleBtn.setToggleGroup(genderGroup);
+        femaleBtn.setToggleGroup(genderGroup);
+        HBox genderBox = new HBox(10, maleBtn, femaleBtn);
 
         Label staffIdLabel = new Label("Staff ID:");
         TextField staffIdField = new TextField();
-        staffIdField.setPromptText("Enter staff ID");
 
-        Label phoneLabel = new Label("Phone number:");
+        Label phoneLabel = new Label("Phone Number:");
         TextField phoneField = new TextField();
-        phoneField.setPromptText("Enter phone number");
 
         Label emailLabel = new Label("Email:");
         TextField emailField = new TextField();
-        emailField.setPromptText("Enter email");
-        
+
+        Label positionLabel = new Label("Position:");
+        TextField positionField = new TextField();
+
         Label mahallahLabel = new Label("Choose your Mahallah:");
         ComboBox<String> mahallahBox = new ComboBox<>();
-        mahallahBox.getItems().addAll("Faruq", "Siddiq", "Ali", "Bilal", "Uthman", "Salahuddin",
-                "Ruqayyah", "Aminah", "Asiah", "Asma'", "Hafsah", "Halimah", "Maryam", "Nusaibah", "Safiyyah", "Sumayyah");
+
+        // Gender-based Mahallah from real list
+        genderGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            mahallahBox.getItems().clear();
+            if (newVal != null) {
+                RadioButton selected = (RadioButton) newVal;
+                String selectedGender = selected.getText();
+
+                List<Mahallah> filtered = settingsManager.getMahallahList().stream()
+                        .filter(m -> m.getGender().equalsIgnoreCase(selectedGender))
+                        .collect(Collectors.toList());
+
+                for (Mahallah m : filtered) {
+                    mahallahBox.getItems().add(m.getName());
+                }
+            }
+        });
+
+        Label blockLabel = new Label("Block:");
+        Label blockValueLabel = new Label("PG");
 
         Label floorLabel = new Label("Choose your Floor:");
         RadioButton floor1 = new RadioButton("Ground Floor");
         RadioButton floor2 = new RadioButton("Floor 1");
         RadioButton floor3 = new RadioButton("Floor 2");
         RadioButton floor4 = new RadioButton("Floor 3");
-        
         ToggleGroup floorGroup = new ToggleGroup();
         floor1.setToggleGroup(floorGroup);
         floor2.setToggleGroup(floorGroup);
         floor3.setToggleGroup(floorGroup);
         floor4.setToggleGroup(floorGroup);
-        
-        Label roomLabel = new Label("Room number:");
+        HBox floorBox = new HBox(10, floor1, floor2, floor3, floor4);
+
+        Label roomLabel = new Label("Room Number:");
         TextField roomField = new TextField();
 
-        Label compLabel = new Label("Choose your Compartment:");
+        Label compartmentLabel = new Label("Choose your Compartment:");
         RadioButton compA = new RadioButton("A");
         RadioButton compB = new RadioButton("B");
         RadioButton compC = new RadioButton("C");
@@ -70,66 +94,27 @@ public class StaffRegistrationGUI {
         compB.setToggleGroup(compGroup);
         compC.setToggleGroup(compGroup);
         compD.setToggleGroup(compGroup);
+        HBox compBox = new HBox(10, compA, compB, compC, compD);
 
-       
-        leftAlignedContent.getChildren().addAll(
-            nameLabel, nameField,
-            staffIdLabel, staffIdField,
-            phoneLabel, phoneField,
-            emailLabel, emailField,
-            mahallahLabel, mahallahBox,
-            floorLabel, new HBox(10, floor1, floor2, floor3, floor4),
-            roomLabel, roomField,
-            compLabel, new HBox(10, compA, compB, compC, compD)
-        );
+        // Message label
+        Label messageLabel = new Label();
+        messageLabel.setStyle("-fx-text-fill: red;");
+        HBox messageBox = new HBox(messageLabel);
+        messageBox.setAlignment(Pos.CENTER);
 
-        // Buttons (centered)
+        // Submit button 
         Button submitBtn = new Button("Submit");
-        submitBtn.setPrefWidth(100);
-        submitBtn.setOnAction(e -> {
-            if (validateInput(nameField, staffIdField, phoneField, emailField)) {
-                System.out.println("Staff registered: " + nameField.getText());
-                showAlert("Success", "Staff registered successfully!");
-            }
-        });
-
-        Button backBtn = new Button("Back");
-        backBtn.setPrefWidth(100);
-        backBtn.setOnAction(e -> app.setScene(app.getMahallahMenu()));
-
-        HBox buttonBox = new HBox(20, submitBtn, backBtn);
-        buttonBox.setAlignment(Pos.CENTER);
-
-        // Main layout (centered overall, with left-aligned content)
-        VBox layout = new VBox(15);
-        layout.setStyle("-fx-padding: 25;");
-        layout.setAlignment(Pos.TOP_CENTER);
-        layout.getChildren().addAll(
-            title,
-            leftAlignedContent,
-            buttonBox
-        );
-
-        return layout;
-    }
-
-    private boolean validateInput(TextField... fields) {
-        for (TextField field : fields) {
-            if (field.getText().trim().isEmpty()) {
-                showAlert("Error", "All fields must be filled!");
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-}
-
+        submitBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                String name = nameField.getText().trim();
+                Toggle genderToggle = genderGroup.getSelectedToggle();
+                String gender = (genderToggle != null) ? ((RadioButton) genderToggle).getText() : "";
+                String staffId = staffIdField.getText().trim();
+                String phone = phoneField.getText().trim();
+                String email = emailField.getText().trim();
+                String position = positionField.getText().trim();
+                String mahallah = mahallahBox.getValue();
+                String block = "PG";
+                Toggle floorToggle = floorGroup.getSelectedToggle();
+                String floor = (floorToggle != null) ? ((RadioButton) 

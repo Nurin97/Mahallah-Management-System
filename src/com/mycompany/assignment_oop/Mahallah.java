@@ -1,24 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.assignment_oop;
 
-/**
- *
- * @author LENOVO
- */
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Mahallah 
-{
+public class Mahallah {
     private String name;
     private ArrayList<Block> blocks;
+    private String status = "Available"; 
+    private String gender; 
 
     public Mahallah(String name, String status) {
         this.name = name;
         this.status = status;
+        this.blocks = new ArrayList<>();
+    }
+
+    // This constructor is required for loading from file with gender
+    public Mahallah(String name, String status, String gender) {
+        this.name = name;
+        this.status = status;
+        this.gender = gender;
         this.blocks = new ArrayList<>();
     }
 
@@ -29,9 +30,18 @@ public class Mahallah
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return getName();
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public ArrayList<Block> getBlocks() {
@@ -44,14 +54,14 @@ public class Mahallah
 
     public boolean removeBlock(char blockName) {
         for (int i = 0; i < blocks.size(); i++) {
-        if (blocks.get(i).getBlockName() == blockName) {
-            blocks.remove(i);
-            return true;
+            if (blocks.get(i).getBlockName() == blockName) {
+                blocks.remove(i);
+                return true;
             }
         }
         return false;
     }
-   
+
     public Block getBlock(char blockName) {
         for (Block b : blocks) {
             if (b.getBlockName() == blockName) {
@@ -62,7 +72,7 @@ public class Mahallah
     }
 
     public void display() {
-        System.out.println("Mahallah: " + name);
+        System.out.println("Mahallah: " + name + " (" + status + ", " + gender + ")");
         if (blocks.isEmpty()) {
             System.out.println("  No blocks.");
         } else {
@@ -84,41 +94,39 @@ public class Mahallah
         }
     }
 
-    // choose mahallah from SettingsManager
     public static Mahallah chooseMahallah(Scanner sc) {
-    ArrayList<Mahallah> mahallahList = SettingsManager.getInstance().getMahallahList();
+        ArrayList<Mahallah> mahallahList = SettingsManager.getInstance().getMahallahList();
 
-    if (mahallahList.isEmpty()) {
-        System.out.println("No Mahallahs available. Please add one in Settings first.");
-        return null;
-    }
-
-    System.out.println("\nChoose a Mahallah:");
-    for (int i = 0; i < mahallahList.size(); i++) {
-        System.out.println((i + 1) + ". " + mahallahList.get(i).getName());
-    }
-
-    int choice = -1;
-    while (true) {
-        System.out.print("Enter your choice (1-" + mahallahList.size() + "): ");
-        if (sc.hasNextInt()) {
-            choice = sc.nextInt();
-            sc.nextLine(); 
-            if (choice >= 1 && choice <= mahallahList.size()) {
-                break;
-            } else {
-                System.out.println("Invalid choice. Please enter a number between 1 and " + mahallahList.size() + ".");
-            }
-        } else {
-            System.out.println("Invalid input. Please enter a valid number.");
-            sc.nextLine();
+        if (mahallahList.isEmpty()) {
+            System.out.println("No Mahallahs available. Please add one in Settings first.");
+            return null;
         }
+
+        System.out.println("\nChoose a Mahallah:");
+        for (int i = 0; i < mahallahList.size(); i++) {
+            System.out.println((i + 1) + ". " + mahallahList.get(i).getName());
+        }
+
+        int choice = -1;
+        while (true) {
+            System.out.print("Enter your choice (1-" + mahallahList.size() + "): ");
+            if (sc.hasNextInt()) {
+                choice = sc.nextInt();
+                sc.nextLine(); 
+                if (choice >= 1 && choice <= mahallahList.size()) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and " + mahallahList.size() + ".");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                sc.nextLine();
+            }
+        }
+
+        return mahallahList.get(choice - 1);
     }
 
-    return mahallahList.get(choice - 1);
-}
-    
-    // choose block from selected mahallah 
     public static Block chooseBlock(Scanner sc, Mahallah mahallah) {
         ArrayList<Block> blocks = mahallah.getBlocks();
 
@@ -203,28 +211,4 @@ public class Mahallah
             if (sc.hasNextInt()) {
                 choice = sc.nextInt();
                 sc.nextLine();
-                if (choice >= 1 && choice <= roomsOnFloor.size()) {
-                    break;
-                } else {
-                    System.out.print("Invalid choice. Enter 1 to " + roomsOnFloor.size() + ": ");
-                }
-            } else {
-                System.out.print("Invalid input. Enter a number: ");
-                sc.nextLine();
-            }
-        }
-
-        return roomsOnFloor.get(choice - 1);
-    }
-
-    private String status = "Available"; // 🟢 Default
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-}
+              

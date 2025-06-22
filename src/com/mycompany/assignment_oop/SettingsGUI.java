@@ -486,7 +486,7 @@ public class SettingsGUI {
     private void showAddMahallahDialog() {
         Dialog<Mahallah> dialog = new Dialog<>();
         dialog.setTitle("Add Mahallah");
-        dialog.setHeaderText("Enter Mahallah Name and Status");
+        dialog.setHeaderText("Enter Mahallah Name, Status, and Gender");
 
         ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
@@ -501,18 +501,24 @@ public class SettingsGUI {
 
         ComboBox<String> statusBox = new ComboBox<>();
         statusBox.getItems().addAll("Available", "Full", "Under Maintenance");
-        statusBox.setValue("Available"); // Default
+        statusBox.setValue("Available");
+
+        ComboBox<String> genderBox = new ComboBox<>();
+        genderBox.getItems().addAll("Male", "Female");
+        genderBox.setValue("Male");
 
         grid.add(new Label("Name:"), 0, 0);
         grid.add(nameField, 1, 0);
         grid.add(new Label("Status:"), 0, 1);
         grid.add(statusBox, 1, 1);
+        grid.add(new Label("Gender:"), 0, 2);
+        grid.add(genderBox, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
-                return new Mahallah(nameField.getText(), statusBox.getValue());
+                return new Mahallah(nameField.getText(), statusBox.getValue(), genderBox.getValue());
             }
             return null;
         });
@@ -526,45 +532,54 @@ public class SettingsGUI {
     }
 
     
-    private void showEditMahallahDialog(Mahallah m) {
+    private void showEditMahallahDialog(Mahallah mahallah) {
         Dialog<Mahallah> dialog = new Dialog<>();
         dialog.setTitle("Edit Mahallah");
-        dialog.setHeaderText("Edit Name and Status");
+        dialog.setHeaderText("Update Mahallah Name, Status, and Gender");
 
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField nameField = new TextField(m.getName());
-
+        TextField nameField = new TextField(mahallah.getName());
         ComboBox<String> statusBox = new ComboBox<>();
         statusBox.getItems().addAll("Available", "Full", "Under Maintenance");
-        statusBox.setValue(m.getStatus());
+        statusBox.setValue(mahallah.getStatus());
+
+        ComboBox<String> genderBox = new ComboBox<>();
+        genderBox.getItems().addAll("Male", "Female");
+        genderBox.setValue(mahallah.getGender());
 
         grid.add(new Label("Name:"), 0, 0);
         grid.add(nameField, 1, 0);
         grid.add(new Label("Status:"), 0, 1);
         grid.add(statusBox, 1, 1);
+        grid.add(new Label("Gender:"), 0, 2);
+        grid.add(genderBox, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
 
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                m.setName(nameField.getText().trim());
-                m.setStatus(statusBox.getValue());
+            if (dialogButton == updateButtonType) {
+                mahallah.setName(nameField.getText());
+                mahallah.setStatus(statusBox.getValue());
+                mahallah.setGender(genderBox.getValue());
+                return mahallah;
             }
             return null;
         });
 
-        dialog.showAndWait();
-        settingsManager.saveMahallahs();
-        refreshMahallahList();
-        showSimpleAlert("Updated", "Mahallah updated.");
+        dialog.showAndWait().ifPresent(updated -> {
+            settingsManager.saveMahallahs();
+            refreshMahallahList();
+            showSimpleAlert("Updated", "Mahallah updated successfully!");
+        });
     }
+
 
     
     private void showAddBlockDialog() {

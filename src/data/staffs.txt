@@ -1,0 +1,2 @@
+Nuzaifah, Female, 1234, 0194387548, zaifah@gmail.com, principal, Hafsa, PG, Floor 2, 100, B
+Anwaar, Male, 32342343, 01183784334, awar@gmail.com, Head Principal, Bilal, PG, Floor 3, 213, D

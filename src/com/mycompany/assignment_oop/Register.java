@@ -58,6 +58,4 @@ public class Register
             }
         });
 
-        return root;
-    }
-}
+        retur

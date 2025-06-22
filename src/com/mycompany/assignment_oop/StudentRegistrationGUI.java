@@ -1,26 +1,32 @@
 package com.mycompany.assignment_oop;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-
-
-public class StudentRegistrationGUI{
+public class StudentRegistrationGUI {
     
+    private SettingsManager settingsManager = SettingsManager.getInstance(); 
+
     public Parent getView(MahallahMain app) {
+        settingsManager = SettingsManager.getInstance(); // ADDED
+        VBox layout = new VBox(10);
+        layout.setStyle("-fx-padding: 15;");
+
         Label title = new Label("Student Registration");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         Label nameLabel = new Label("Name:");
         TextField nameField = new TextField();
 
-        Label matrixLabel = new Label("Matric number:");
+        Label matrixLabel = new Label("Matrix number:");
         TextField matrixField = new TextField();
 
         Label phoneLabel = new Label("Phone number:");
@@ -32,16 +38,37 @@ public class StudentRegistrationGUI{
         Label kuliyyahLabel = new Label("Kulliyyah:");
         TextField kuliyyahField = new TextField();
 
-        Label mahallahLabel = new Label("Choose your Mahallah:");
-        ComboBox<String> mahallahBox = new ComboBox<>();
-        mahallahBox.getItems().addAll("Faruq", "Siddiq", "Ali", "Bilal", "Uthman", "Salahuddin",
-                "Ruqayyah", "Aminah", "Asiah", "Asma'", "Hafsah", "Halimah", "Maryam", "Nusaibah", "Safiyyah", "Sumayyah");
+        Label genderLabel = new Label("Gender:");
+        RadioButton maleBtn = new RadioButton("Male");
+        RadioButton femaleBtn = new RadioButton("Female");
+        ToggleGroup genderGroup = new ToggleGroup();
+        maleBtn.setToggleGroup(genderGroup);
+        femaleBtn.setToggleGroup(genderGroup);
+        HBox genderBox = new HBox(10, maleBtn, femaleBtn);
 
-        Label blockLabel = new Label("Choose your Block:");
+        Label mahallahLabel = new Label("Mahallah:");
+        ComboBox<String> mahallahBox = new ComboBox<>();
+
+        genderGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            mahallahBox.getItems().clear();
+            if (newVal != null) {
+                RadioButton selected = (RadioButton) newVal;
+                String selectedGender = selected.getText();
+
+                for (Mahallah m : settingsManager.getMahallahList()) {
+                    if (m.getGender().equalsIgnoreCase(selectedGender)) {
+                        mahallahBox.getItems().add(m.getName());
+                    }
+                }
+            }
+        });
+
+
+        Label blockLabel = new Label("Block:");
         ComboBox<String> blockBox = new ComboBox<>();
         blockBox.getItems().addAll("A", "B", "C", "D", "E", "F", "G");
 
-        Label floorLabel = new Label("Choose your Floor:");
+        Label floorLabel = new Label("Floor:");
         RadioButton floor1 = new RadioButton("Ground Floor");
         RadioButton floor2 = new RadioButton("Floor 1");
         RadioButton floor3 = new RadioButton("Floor 2");
@@ -51,11 +78,12 @@ public class StudentRegistrationGUI{
         floor2.setToggleGroup(floorGroup);
         floor3.setToggleGroup(floorGroup);
         floor4.setToggleGroup(floorGroup);
+        HBox floorBox = new HBox(10, floor1, floor2, floor3, floor4);
 
         Label roomLabel = new Label("Room number:");
         TextField roomField = new TextField();
 
-        Label compLabel = new Label("Choose your Compartment:");
+        Label compartmentLabel = new Label("Compartment:");
         RadioButton compA = new RadioButton("A");
         RadioButton compB = new RadioButton("B");
         RadioButton compC = new RadioButton("C");
@@ -65,76 +93,50 @@ public class StudentRegistrationGUI{
         compB.setToggleGroup(compGroup);
         compC.setToggleGroup(compGroup);
         compD.setToggleGroup(compGroup);
+        HBox compBox = new HBox(10, compA, compB, compC, compD);
+
+        Button submitBtn = new Button("Submit");
+        Button btnBack = new Button("Back");
+
+        HBox buttonBox = new HBox(20, submitBtn, btnBack);
+        buttonBox.setAlignment(Pos.CENTER);
 
         Label messageLabel = new Label();
+        messageLabel.setStyle("-fx-text-fill: red;");
         HBox messageBox = new HBox(messageLabel);
         messageBox.setAlignment(Pos.CENTER);
 
-        Button submitBtn = new Button("Submit");
-        submitBtn.setPrefWidth(80);
-        submitBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) 
-            {
-                try {
-                    String name = nameField.getText().trim();
-                    int id = Integer.parseInt(matrixField.getText().trim());
-                    int phone = Integer.parseInt(phoneField.getText().trim());
-                    String email = emailField.getText().trim();
-                    String kuliyyah = kuliyyahField.getText().trim();
-                    String mahallah = mahallahBox.getValue();
-                    String block = blockBox.getValue();
-                    String floor = floorGroup.getSelectedToggle() != null ? ((RadioButton) floorGroup.getSelectedToggle()).getText() : "";
-                    int room = Integer.parseInt(roomField.getText().trim());
-                    String compartment = compGroup.getSelectedToggle() != null ? ((RadioButton) compGroup.getSelectedToggle()).getText() : "";
+        submitBtn.setOnAction(e -> {
+            String name = nameField.getText().trim();
+            String matrix = matrixField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String email = emailField.getText().trim();
+            String kuliyyah = kuliyyahField.getText().trim();
+            String room = roomField.getText().trim();
 
-                    Student student = new Student(name, id, email, phone, kuliyyah, mahallah, block, floor, room, compartment);
-                    app.getRegistration().addStudent(student);
+            Toggle genderToggle = genderGroup.getSelectedToggle();
+            String gender = (genderToggle != null) ? ((RadioButton) genderToggle).getText() : null;
 
-                    // Save to file
-                    String record = student.toFileString() + "\n";
-                    try (FileWriter writer = new FileWriter("src/data/students.txt", true)) {
-                        writer.write(record);
-                        messageLabel.setText("Student registered successfully.");
-                    } catch (IOException ex) {
-                        messageLabel.setText("Error saving student.");
-                    }
-                } catch (NumberFormatException ex) {
-                    messageLabel.setText("ID, Phone, and Room must be numbers.");
-                }
+            String mahallah = mahallahBox.getValue();
+            String block = blockBox.getValue();
+
+            Toggle floorToggle = floorGroup.getSelectedToggle();
+            String floor = (floorToggle != null) ? ((RadioButton) floorToggle).getText() : null;
+
+            Toggle compToggle = compGroup.getSelectedToggle();
+            String compartment = (compToggle != null) ? ((RadioButton) compToggle).getText() : null;
+
+            // Validate
+            if (name.isEmpty() || matrix.isEmpty() || phone.isEmpty() || email.isEmpty() ||
+                    kuliyyah.isEmpty() || room.isEmpty() || gender == null || mahallah == null ||
+                    block == null || floor == null || compartment == null) {
+                messageLabel.setText("Please fill in all the fields.");
+                return;
             }
-        });
 
-        Button backBtn = new Button("Back");
-        backBtn.setPrefWidth(80);
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                app.setScene(app.getMahallahMenu());
-            }
-        });
+            String line = String.join(", ",
+                    name, gender, matrix, phone, email, kuliyyah,
+                    mahallah, block, floor, room, compartment);
 
-        VBox layout = new VBox(10);
-        layout.setStyle("-fx-padding: 15;");
-        layout.setAlignment(Pos.TOP_LEFT);
-
-        HBox buttonBox = new HBox(20, submitBtn, backBtn);
-        buttonBox.setAlignment(Pos.CENTER);
-
-        layout.getChildren().addAll(
-                title, nameLabel, nameField, matrixLabel, matrixField,
-                phoneLabel, phoneField, emailLabel, emailField,
-                kuliyyahLabel, kuliyyahField,
-                mahallahLabel, mahallahBox,
-                blockLabel, blockBox,
-                floorLabel, new HBox(10, floor1, floor2, floor3, floor4),
-                roomLabel, roomField,
-                compLabel, new HBox(10, compA, compB, compC, compD),
-                buttonBox, messageBox
-        );
-
-        return layout;
-    }
-    
-}
-
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/data/students.txt", true))) {
+                writer.wri

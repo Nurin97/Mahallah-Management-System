@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class SettingsManager {
     
     private static SettingsManager instance = null;
+    private SettingsManager settingsManager; // ADDED to fetch mahallah list
     private ArrayList<Mahallah> mahallahList;
     private final String FILE_NAME = "src/data/mahallahs.txt";
 
@@ -29,18 +30,18 @@ public class SettingsManager {
             boolean hasRooms = false;
             for (Mahallah m : mahallahList) {
                 for (Block b : m.getBlocks()) {
-                        if (!b.getRooms().isEmpty()) {
+                    if (!b.getRooms().isEmpty()) {
                         hasRooms = true;
                         break;
-                        }
+                    }
                 }
                 if (hasRooms) break;
             }
-                if (!hasRooms) {
-                    mahallahList.clear();
-                    initializeDefaultMahallahs();
-                    saveMahallahs();
-                }
+            if (!hasRooms) {
+                mahallahList.clear();
+                initializeDefaultMahallahs();
+                saveMahallahs();
+            }
         }
     }
 
@@ -53,6 +54,18 @@ public class SettingsManager {
 
     public ArrayList<Mahallah> getMahallahList() {
         return mahallahList;
+    }
+        public void addMahallah(Mahallah mahallah) {
+        mahallahList.add(mahallah);
+        saveMahallahs();
+    }
+
+    public void removeMahallahByName(String name) {
+        Mahallah target = findMahallahByName(name);
+        if (target != null) {
+            mahallahList.remove(target);
+            saveMahallahs();
+        }
     }
 
     public void settingsMenu(Scanner sc) {
@@ -262,16 +275,16 @@ public class SettingsManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (!line.contains("|")) continue; // safety check
-
-                String[] parts = line.split("\\|"); // name and status+blocks
+                if (!line.contains("|")) continue;
+                String[] parts = line.split("\\|");
                 String name = parts[0].trim();
-                String[] statusAndBlocks = parts[1].split(":", 2); // [status, A[],B[]]
 
-                String status = statusAndBlocks[0].trim();
-                String blocksData = statusAndBlocks.length > 1 ? statusAndBlocks[1] : "";
+                String[] statusGenderAndBlocks = parts[1].split(":", 3);
+                String status = statusGenderAndBlocks[0].trim();
+                String gender = statusGenderAndBlocks.length > 1 ? statusGenderAndBlocks[1].trim() : "Mixed";
+                String blocksData = statusGenderAndBlocks.length > 2 ? statusGenderAndBlocks[2] : "";
 
-                Mahallah mahallah = new Mahallah(name, status);
+                Mahallah mahallah = new Mahallah(name, status, gender);
 
                 if (!blocksData.isEmpty()) {
                     String[] blocks = blocksData.split("],");
@@ -301,7 +314,6 @@ public class SettingsManager {
                         mahallah.addBlock(block);
                     }
                 }
-
                 mahallahList.add(mahallah);
             }
         } catch (IOException e) {
@@ -314,7 +326,9 @@ public class SettingsManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
             for (Mahallah m : mahallahList) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(m.getName()).append("|").append(m.getStatus()).append(":");
+                sb.append(m.getName()).append("|")
+                    .append(m.getStatus()).append(":")
+                    .append(m.getGender()).append(":");
                 ArrayList<Block> blocks = m.getBlocks();
                 for (int i = 0; i < blocks.size(); i++) {
                     Block b = blocks.get(i);
@@ -326,8 +340,7 @@ public class SettingsManager {
                         sb.append(r.getRoomNumber()).append("-")
                             .append(r.getFloor()).append("-") 
                             .append(r.getCompartment());
-
-                    if (j < rooms.size() - 1) sb.append(",");
+                        if (j < rooms.size() - 1) sb.append(",");
                     }
                     sb.append("]");
                     if (i < blocks.size() - 1) sb.append(",");
@@ -335,7 +348,6 @@ public class SettingsManager {
                 writer.write(sb.toString());
                 writer.newLine();
             }
-            
         } catch (IOException e) {
             System.out.println("Error saving Mahallahs: " + e.getMessage());
         }
@@ -345,33 +357,12 @@ public class SettingsManager {
         String[] names = {"Faruq", "Siddiq", "Bilal", "Aminah", "Asiah", "Hafsa"};
 
         for (String name : names) {
-            Mahallah m = new Mahallah(name, "Available"); 
-
-            // Add blocks A to D
+            Mahallah m = new Mahallah(name, "Available", "Mixed");
             m.addBlock(new Block('A'));
             m.addBlock(new Block('B'));
             m.addBlock(new Block('C'));
             m.addBlock(new Block('D'));
+
             if (name.equalsIgnoreCase("Faruq")) {
                 Block b = m.getBlock('B');
-                if (b != null) b.addRoom(new Room("201", "2", "A"));
-            } else if (name.equalsIgnoreCase("Siddiq")) {
-                Block b = m.getBlock('B');
-                if (b != null) b.addRoom(new Room("202", "2", "B"));
-            } else if (name.equalsIgnoreCase("Aminah")) {
-                Block b = m.getBlock('C');
-                if (b != null) b.addRoom(new Room("103", "1", "C"));
-            } else if (name.equalsIgnoreCase("Bilal")) {
-                Block bA = m.getBlock('A');
-                Block bB = m.getBlock('B');
-                if (bA != null) bA.addRoom(new Room("305", "3", "B"));
-                if (bB != null) bB.addRoom(new Room("101", "1", "C"));
-            } else if (name.equalsIgnoreCase("Asiah")) {
-                Block b = m.getBlock('D');
-                if (b != null) b.addRoom(new Room("410", "4","D"));
-            }
-
-            mahallahList.add(m);
-        }
-    }
-}
+                if (b != null) b.addRoo
